@@ -8,4 +8,134 @@
     <h1>¡Hola Mundo!</h1>
     <p>Esta es mi primera página web.</p>
 </body>
-</html>
+</html>def cadastrar_cliente():
+    print("\n--- Novo Cadastro ---")
+    nome = input("Nome: ")
+    email = input("Email: ")
+    telefone = input("Telefone: ")
+    
+    cliente = {
+        "nome": nome,
+        "email": email,
+        "telefone": telefone
+    }
+    
+    clientes.append(cliente)
+    print(f"✅ Cliente {nome} cadastrado com sucesso!")
+
+def listar_clientes():
+    print("\n--- Lista de Clientes ---")
+    if not clientes:
+        print("Nenhum cliente cadastrado.")
+    else:
+        for i, c in enumerate(clientes):
+            print(f"{i} | Nome: {c['nome']} | Email: {c['email']}")
+
+# Exemplo de Menu Principal
+while True:
+    print("\n[1] Cadastrar | [2] Listar | [0] Sair")
+    opcao = input("Escolha uma opção: ")
+
+    if opcao == "1":
+        cadastrar_cliente()
+    elif opcao == "2":
+        listar_clientes()
+    elif opcao == "0":
+        break
+    else:
+        print("Opção inválida!")from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+
+# Configuração do Banco de Dados SQLite
+app.config['SQLALCHEMY_DATABASE_DATABASE_URI'] = 'sqlite:///clientes.db'
+db = SQLAlchemy(app)
+
+# Modelo da Tabela de Clientes
+class Cliente(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+
+# Criar o banco de dados antes de iniciar
+with app.app_context():
+    db.create_all()
+
+@app.route('/')
+def index():
+    todos_clientes = Cliente.query.all()
+    return render_template('index.html', clientes=todos_clientes)
+
+@app.route('/cadastrar', methods=['POST'])
+def cadastrar():
+    nome = request.form.get('nome')
+    email = request.form.get('email')
+    
+    novo_cliente = Cliente(nome=nome, email=email)
+    db.session.add(novo_cliente)
+    db.session.commit()
+    
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)1. Conectar ao banco (se não existir, ele cria o arquivo)
+conexao = sqlite3.connect('sistema_clientes.db')
+cursor = conexao.cursor()
+
+# 2. Criar a tabela (se ainda não existir)
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS clientes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        cidade TEXT
+    )
+''')
+conexao.commit()
+
+def menu():
+    print("\n--- SISTEMA DE CLIENTES (SQLite) ---")
+    print("1. Cadastrar Cliente")
+    print("2. Listar Clientes")
+    print("3. Sair")
+    return input("Escolha uma opção: ")
+
+def salvar_cliente(nome, email, cidade):
+    try:
+        cursor.execute('''
+            INSERT INTO clientes (nome, email, cidade) 
+            VALUES (?, ?, ?)
+        ''', (nome, email, cidade))
+        conexao.commit()
+        print(f"\n✅ {nome} cadastrado com sucesso!")
+    except sqlite3.IntegrityError:
+        print("\n❌ Erro: Este e-mail já está cadastrado.")
+
+def ver_clientes():
+    cursor.execute('SELECT * FROM clientes')
+    dados = cursor.fetchall()
+    print("\nID | NOME | EMAIL | CIDADE")
+    print("-" * 30)
+    for linha in dados:
+        print(f"{linha[0]} | {linha[1]} | {linha[2]} | {linha[3]}")
+
+# Loop principal
+while True:
+    opcao = menu()
+    
+    if opcao == '1':
+        n = input("Nome: ")
+        e = input("Email: ")
+        c = input("Cidade: ")
+        salvar_cliente(n, e, c)
+    elif opcao == '2':
+        ver_clientes()
+    elif opcao == '3':
+        print("Saindo...")
+        break
+    else:
+        print("Opção inválida.")
+
+# Fechar conexão ao sair
+conexao.close()
