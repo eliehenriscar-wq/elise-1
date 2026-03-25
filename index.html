@@ -138,4 +138,458 @@ while True:
         print("Opção inválida.")
 
 # Fechar conexão ao sair
-conexao.close()
+conexao.close()<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Nome da Sua App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Bem-vindo de volta</h2>
+            <p>Por favor, insira seus dados para entrar.</p>
+            
+            <form action="/login" method="POST">
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                
+                <div class="options">
+                    <label><input type="checkbox"> Lembrar-me</label>
+                    <a href="#">Esqueceu a senha?</a>
+                </div>
+                
+                <button type="submit" class="btn-login">Entrar</button>
+            </form>
+            
+            <p class="footer-text">Não tem uma conta? <a href="#">Cadastre-se</a></p>
+        </div>
+    </div>
+</body>
+</html>{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #777;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #764ba2;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.options a {
+    color: #764ba2;
+    text-decoration: none;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background: #764ba2;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-login:hover !DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente | Sistema</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="cadastro-container">
+        <div class="cadastro-box">
+            <h2>Novo Cliente</h2>
+            <p>Preencha os campos abaixo para registrar o cliente.</p>
+            
+            <form action="/salvar-cliente" method="POST">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="nome">Nome Completo / Razão Social</label>
+                        <input type="text" id="nome" name="nome" placeholder="Ex: João Silva" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="documento">CPF / CNPJ</label>
+                        <input type="text" id="documento" name="documento" placeholder="000.000.000-00" required>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" placeholder="cliente@email.com">
+                        </div>
+                        <div class="input-group">
+                            <label for="telefone">Telefone</label>
+                            <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="endereco">Endereço Completo</label>
+                        <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro...">
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button type="button" class="btn-cancelar" onclick="window.history.back()">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>* Adicione isso ao seu style.css anterior */
+
+.cadastro-container {
+    width: 100%;
+    max-width: 600px; /* Mais largo que o login */
+    padding: 20px;
+}
+
+.cadastro-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.input-row {
+    display: flex;
+    gap: 15px;
+}
+
+.input-row .input-group {
+    flex: 1;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-salvar {
+    padding: 12px 25px;
+    background: #28a745; /* Verde para salvar */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-salvar:hover {
+    background: #218838;
+}
+
+.btn-cancelar {
+    padding: 12px 25px;
+    background: #eee;
+    border: none;
+    border-radius: 5px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Responsividade para celulares */
+@media (max-width: 480px) {
+    .input-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+    background: #5a3782;
+}
+
+.footer-text {
+    margin-top: 20px;
+}
+
+.footer-text a {
+    color: #764ba2;
+    font-weight: bold;
+    text-decoration: none;
+}
+}* Adicione isso ao seu style.css anterior */
+
+.cadastro-container {
+    width: 100%;
+    max-width: 600px; /* Mais largo que o login */
+    padding: 20px;
+}
+
+.cadastro-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.input-row {
+    display: flex;
+    gap: 15px;
+}
+
+.input-row .input-group {
+    flex: 1;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-salvar {
+    padding: 12px 25px;
+    background: #28a745; /* Verde para salvar */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-salvar:hover {
+    background: #218838;
+}
+
+.btn-cancelar {
+    padding: 12px 25px;
+    background: #eee;
+    border: none;!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lançar Venda | Financeiro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="cadastro-container">
+        <div class="cadastro-box">
+            <h2>Nova Venda</h2>
+            <p>Registre os detalhes da transação financeira.</p>
+            
+            <form action="/processar-venda" method="POST">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="cliente-venda">Selecionar Cliente</label>
+                        <select id="cliente-venda" name="cliente" required>
+                            <option value="">Pesquisar cliente...</option>
+                            <option value="1">João Silva</option>
+                            <option value="2">Maria Oliveira</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex: 0.5;">
+                        <label for="data-venda">Data</label>
+                        <input type="date" id="data-venda" name="data" required>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="produto-venda">Produto</label>
+                        <select id="produto-venda" name="produto">
+                            <option value="">Selecionar item do estoque...</option>
+                            <option value="101">Teclado Mecânico - R$ 250,00</option>
+                            <option value="102">Mouse Gamer - R$ 120,00</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex: 0.3;">
+                        <label for="qtd-venda">Qtd.</label>
+                        <input type="number" id="qtd-venda" name="quantidade" value="1" min="1">
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="metodo-pagamento">Forma de Pagamento</label>
+                        <select id="metodo-pagamento" name="metodo">
+                            <option value="pix">PIX</option>
+                            <option value="cartao_credito">Cartão de Crédito</option>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="boleto">Boleto</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="status-pagamento">Status</label>
+                        <select id="status-pagamento" name="status">
+                            <option value="pago">Pago</option>
+                            <option value="pendente">Pendente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="resumo-financeiro">
+                    <div class="resumo-item">
+                        <span>Subtotal:</span>
+                        <span>R$ 0,00</span>
+                    </div>
+                    <div class="resumo-item total">
+                        <span>Total da Venda:</span>
+                        <strong>R$ 0,00</strong>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button type="button" class="btn-cancelar" onclick="window.history.back()">Cancelar</button>
+                    <button type="submit" class="btn-venda">Finalizar Venda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>Estilos para a tela financeira */
+
+.divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 20px 0;
+}
+
+.resumo-financeiro {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    border-left: 5px solid #764ba2;
+}
+
+.resumo-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.resumo-item.total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #ddd;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.btn-venda {
+    padding: 12px 25px;
+    background: #764ba2;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-venda:hover {
+    background: #5a3782;
+    box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
+}
+
+/* Ajuste para o campo de data */
+input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+}
+    border-radius: 5px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Responsividade para celulares */
+@media (max-width: 480px) {
+    .input-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
