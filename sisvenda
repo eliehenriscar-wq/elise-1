@@ -1,0 +1,211 @@
+import sqlite3
+import os
+
+# =================================================================
+# 1. CONFIGURAÇÕES E BANCO DE DADOS
+# =================================================================
+
+def obter_conexao():
+    """Conecta ao banco e garante que as chaves estrangeiras funcionem."""
+    conn = sqlite3.connect("sisvenda.db")
+    conn.execute("PRAGMA foreign_keys = ON;")
+    return conn
+
+def criar_banco():
+    """Cria todas as tabelas necessárias para o projeto."""
+    with obter_conexao() as conn:
+        cursor = conn.cursor()
+        
+        # TABELA DE USUÁRIOS (Para o Login)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            senha TEXT NOT NULL
+        )""")
+        
+        # TABELA DE CLIENTES
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS clientes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            email TEXT,
+            telefone TEXT
+        )""")
+        
+        # TABELA DE PRODUTOS
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS produtos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            preco REAL NOT NULL,
+            estoque INTEGER NOT NULL
+        )""")
+        
+        # TABELA DE VENDAS (Relaciona Cliente e Produto)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS vendas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_cliente INTEGER NOT NULL,
+            id_produto INTEGER NOT NULL,
+            quantidade INTEGER NOT NULL,
+            total REAL NOT NULL,
+            data_venda TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (id_cliente) REFERENCES clientes(id),
+            FOREIGN KEY (id_produto) REFERENCES produtos(id)
+        )""")
+        conn.commit()
+
+# =================================================================
+# 2. FUNÇÕES DE APOIO (VALIDAÇÃO)
+# =================================================================
+
+def limpar_tela():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def ler_inteiro(msg):
+    while True:
+        try: return int(input(msg))
+        except ValueError: print("Erro! Digite um número inteiro.")
+
+def ler_float(msg):
+    while True:
+        try: return float(input(msg))
+        except ValueError: print("Erro! Digite um valor decimal (ex: 10.50).")
+
+# =================================================================
+# 3. MÓDULO DE ACESSO (LOGIN E CADASTRO USUÁRIO)
+# =================================================================
+
+def cadastrar_usuario():
+    print("\n--- Novo Usuário do Sistema ---")
+    username = input("Nome de usuário: ").strip()
+    senha = input("Senha: ").strip()
+    try:
+        with obter_conexao() as conn:
+            conn.execute("INSERT INTO usuarios (username, senha) VALUES (?, ?)", (username, senha))
+            print("Usuário criado com sucesso!")
+    except sqlite3.IntegrityError:
+        print("Erro: Este nome de usuário já existe.")
+    input("\nPressione Enter...")
+
+def login():
+    limpar_tela()
+    print("=== ACESSO AO SISTEMA ===")
+    username = input("Usuário: ")
+    senha = input("Senha: ")
+    with obter_conexao() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM usuarios WHERE username=? AND senha=?", (username, senha))
+        if cursor.fetchone():
+            return True
+    print("\nLogin ou senha incorretos!")
+    input("Pressione Enter para tentar novamente...")
+    return False
+
+# =================================================================
+# 4. MÓDULO DE CLIENTES E PRODUTOS
+# =================================================================
+
+def cadastrar_cliente():
+    print("\n--- Cadastro de Cliente ---")
+    nome = input("Nome Completo: ")
+    email = input("Email: ")
+    telefone = input("Telefone: ")
+    with obter_conexao() as conn:
+        conn.execute("INSERT INTO clientes (nome, email, telefone) VALUES (?, ?, ?)", (nome, email, telefone))
+    print("Cliente salvo com sucesso!")
+
+def cadastrar_produto():
+    print("\n--- Cadastro de Produto ---")
+    nome = input("Nome do Produto: ")
+    preco = ler_float("Preço de Venda: R$ ")
+    estoque = ler_inteiro("Quantidade em Estoque: ")
+    with obter_conexao() as conn:
+        conn.execute("INSERT INTO produtos (nome, preco, estoque) VALUES (?, ?, ?)", (nome, preco, estoque))
+    print("Produto salvo com sucesso!")
+
+def listar_clientes():
+    with obter_conexao() as conn:
+        res = conn.execute("SELECT * FROM clientes").fetchall()
+        print("\n--- Lista de Clientes ---")
+        for c in res: print(f"ID: {c[0]} | Nome: {c[1]}")
+
+def listar_produtos():
+    with obter_conexao() as conn:
+        res = conn.execute("SELECT * FROM produtos").fetchall()
+        print("\n--- Lista de Produtos ---")
+        for p in res: print(f"ID: {p[0]} | Nome: {p[1]} | Estoque: {p[3]}")
+
+# =================================================================
+# 5. MÓDULO DE VENDAS (REGISTRO E BAIXA DE ESTOQUE)
+# =================================================================
+
+def registrar_venda():
+    limpar_tela()
+    listar_clientes()
+    id_cliente = ler_inteiro("\nID do Cliente: ")
+    listar_produtos()
+    id_produto = ler_inteiro("\nID do Produto: ")
+    quantidade = ler_inteiro("Quantidade da Venda: ")
+
+    with obter_conexao() as conn:
+        cursor = conn.cursor()
+        
+        # Validar produto e pegar preço/estoque
+        prod = cursor.execute("SELECT preco, estoque FROM produtos WHERE id=?", (id_produto,)).fetchone()
+        if not prod:
+            print("Produto não existe!"); input(); return
+        
+        preco, estoque_atual = prod
+        if quantidade > estoque_atual:
+            print(f"Estoque insuficiente! Disponível: {estoque_atual}"); input(); return
+
+        total_venda = preco * quantidade
+        
+        # Executar a Venda e Atualizar Estoque
+        cursor.execute("INSERT INTO vendas (id_cliente, id_produto, quantidade, total) VALUES (?, ?, ?, ?)",
+                       (id_cliente, id_produto, quantidade, total_venda))
+        cursor.execute("UPDATE produtos SET estoque = estoque - ? WHERE id=?", (quantidade, id_produto))
+        conn.commit()
+        print(f"\nVENDA FINALIZADA! Total: R${total_venda:.2f}")
+    input("\nPressione Enter...")
+
+# =================================================================
+# 6. MENU E EXECUÇÃO PRINCIPAL
+# =================================================================
+
+def menu_principal():
+    while True:
+        limpar_tela()
+        print("=== MENU PRINCIPAL - SISTEMA DE VENDAS ===")
+        print("1. Cadastrar Cliente")
+        print("2. Cadastrar Produto")
+        print("3. REGISTRAR NOVA VENDA")
+        print("4. Listar Clientes/Produtos")
+        print("0. Sair")
+        
+        opcao = input("\nEscolha uma opção: ")
+        
+        if opcao == "1": cadastrar_cliente(); input("\nContinuar...")
+        elif opcao == "2": cadastrar_produto(); input("\nContinuar...")
+        elif opcao == "3": registrar_venda()
+        elif opcao == "4": 
+            listar_clientes()
+            listar_produtos()
+            input("\nContinuar...")
+        elif opcao == "0": break
+
+if __name__ == "__main__":
+    criar_banco()
+    # Fase inicial de Autenticação
+    while True:
+        limpar_tela()
+        print("1. Fazer Login\n2. Criar Novo Usuário\n0. Sair")
+        inicio = input("\nOpção: ")
+        if inicio == "1":
+            if login(): menu_principal()
+        elif inicio == "2":
+            cadastrar_usuario()
+        elif inicio == "0":
+            print("Sistema encerrado."); break
